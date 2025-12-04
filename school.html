@@ -1,0 +1,2088 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Standard International School Management System</title>
+    <style>
+      /* RESET + THEME */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      }
+      :root {
+        --accent: #1e3a8a;
+        --muted: #6b7280;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #0f172a;
+        --glass: rgba(255, 255, 255, 0.6);
+      }
+      [data-theme="dark"] {
+        --accent: #2563eb;
+        --muted: #9ca3af;
+        --bg: #07111a;
+        --card: #0f1724;
+        --text: #e6eef8;
+        --glass: rgba(255, 255, 255, 0.04);
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+      }
+      /* LAYOUT */
+      .login-wrap {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 1fr 480px;
+      }
+      .hero {
+        background-image: linear-gradient(
+            rgba(6, 9, 23, 0.55),
+            rgba(6, 9, 23, 0.55)
+          ),
+          url("https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1600&q=60");
+        background-size: cover;
+        background-position: center;
+        color: #fff;
+        padding: 48px;
+        display: flex;
+        align-items: center;
+      }
+      .hero .brand {
+        max-width: 680px;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+      }
+      .logo .mark {
+        width: 52px;
+        height: 52px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--accent), #2563eb);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 18px;
+      }
+      .hero h1 {
+        font-size: 36px;
+        margin-top: 18px;
+        line-height: 1.05;
+      }
+      .hero p {
+        margin-top: 12px;
+        opacity: 0.95;
+      }
+
+      .login-panel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 64px;
+        background: var(--bg);
+      }
+      .card {
+        width: 100%;
+        max-width: 520px;
+        background: var(--card);
+        border-radius: 12px;
+        padding: 28px;
+        box-shadow: 0 8px 30px rgba(2, 6, 23, 0.08);
+        color: var(--text);
+      }
+      .card h2 {
+        margin-bottom: 6px;
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 14px;
+        margin-bottom: 18px;
+      }
+
+      label {
+        display: block;
+        font-size: 13px;
+        color: var(--text);
+        margin-bottom: 6px;
+      }
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      select,
+      input[type="date"],
+      textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid #e6e9ef;
+        background: #fbfcfd;
+      }
+      button.btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 0;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .small {
+        font-size: 13px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 0;
+        background: #f3f4f6;
+        cursor: pointer;
+      }
+      .demo-cred {
+        font-size: 13px;
+        background: #f1f5f9;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 12px;
+        color: #111827;
+      }
+
+      /* APP */
+      .app {
+        display: flex;
+        min-height: 100vh;
+      }
+      .sidebar {
+        width: 260px;
+        background: linear-gradient(180deg, #0f172a, #111827);
+        color: #fff;
+        padding: 22px;
+        flex-shrink: 0;
+      }
+      .sidebar .user {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+      .avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 8px;
+        background: #111827;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #fff;
+      }
+      .nav {
+        margin-top: 18px;
+      }
+      .nav button {
+        width: 100%;
+        text-align: left;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 0;
+        background: transparent;
+        color: #cbd5e1;
+        margin-bottom: 6px;
+        cursor: pointer;
+      }
+      .nav button.active {
+        background: rgba(255, 255, 255, 0.06);
+        color: #fff;
+      }
+
+      .main {
+        flex: 1;
+        padding: 28px;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+      .card-panel {
+        background: var(--card);
+        padding: 18px;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(9, 11, 12, 0.04);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #eef2f7;
+        font-size: 14px;
+      }
+      th {
+        background: #f8fafc;
+      }
+
+      .controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .muted-sm {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .hidden {
+        display: none;
+      }
+      .pill {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #eef2ff;
+        color: #1e3a8a;
+        font-weight: 600;
+        font-size: 13px;
+      }
+
+      .photo-thumb {
+        width: 48px;
+        height: 48px;
+        border-radius: 6px;
+        object-fit: cover;
+      }
+      .form-inline {
+        display: flex;
+        gap: 8px;
+      }
+      .chip {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #fbfdff;
+        font-size: 13px;
+        cursor: pointer;
+        border: 1px solid #eef2f7;
+      }
+
+      .upload-preview {
+        width: 84px;
+        height: 84px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 1px solid #e6e9ef;
+      }
+
+      @media (max-width: 920px) {
+        .login-wrap {
+          grid-template-columns: 1fr;
+        }
+        .hero {
+          display: none;
+        }
+        .sidebar {
+          display: none;
+        }
+        .main {
+          padding: 16px;
+        }
+        .grid {
+          grid-template-columns: repeat(1, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body data-theme="light">
+    <!-- LOGIN / SPLASH -->
+    <div id="splash" class="login-wrap">
+      <div class="hero">
+        <div class="brand">
+          <div class="logo">
+            <div class="mark">
+              <div style="margin-top: 12px">
+                <img
+                  src="SIS.jpg"
+                  alt="badge"
+                  style="border-radius: 8px"
+                  width="70"
+                  height="80"
+                />>
+              </div>
+            </div>
+            <div>
+              <div style="font-size: 18px">Standard International</div>
+              <div style="font-size: 12px; color: rgba(255, 255, 255, 0.85)">
+                School Management System
+              </div>
+            </div>
+          </div>
+          <h1>Admin Dashboard</h1>
+          <p>
+            Manage students, teachers, classes, attendance and exports. Use your
+            credentials on the right to sign in and explore the dashboard.
+          </p>
+        </div>
+      </div>
+
+      <div class="login-panel">
+        <div class="card" role="region" aria-label="login">
+          <h2>Sign in</h2>
+          <div class="muted">Enter your credentials to open the dashboard</div>
+
+          <!-- Login form: uses onsubmit to prevent refresh -->
+          <form id="loginForm" onsubmit="handleLogin(event)">
+            <div style="margin-bottom: 10px">
+              <label for="loginEmail">Email</label>
+              <input
+                id="loginEmail"
+                type="email"
+                placeholder="admin@school.test"
+                value="admin@school.test"
+                required
+              />
+            </div>
+            <div style="margin-bottom: 10px">
+              <label for="loginPassword">Password</label>
+              <input
+                id="loginPassword"
+                type="password"
+                placeholder="admin123"
+                value="admin123"
+                required
+              />
+            </div>
+
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 8px;
+              "
+            >
+              <div class="muted-sm">
+                Account: <strong>admin@school.test</strong>
+              </div>
+              <button type="submit" id="loginBtn" class="btn">Sign in</button>
+            </div>
+            <p
+              id="loginError"
+              style="color: #ef4444; margin-top: 10px; display: none"
+            >
+              Invalid email or password
+            </p>
+          </form>
+
+          <div class="demo-cred" aria-hidden style="margin-top: 12px">
+            <div><strong>Demo credentials</strong></div>
+            <div style="margin-top: 6px; font-size: 13px">
+              Email: <code>admin@school.test</code> — Password:
+              <code>admin123</code>
+            </div>
+            <div style="margin-top: 8px; color: #374151; font-size: 13px">
+              Tip: Data is stored locally in your browser (Local Storage). You
+              can edit/export/import later.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APP / DASHBOARD -->
+    <div id="app" class="app hidden" aria-hidden="true">
+      <aside class="sidebar" role="navigation">
+        <div class="user">
+          <div class="avatar" id="adminAvatar">AD</div>
+          <div>
+            <div style="font-weight: 700" id="adminName">Administrator</div>
+            <div class="muted-sm" id="adminEmail">admin@school.test</div>
+          </div>
+        </div>
+
+        <nav class="nav" id="nav">
+          <button data-view="home" class="active">Home</button>
+          <button data-view="administrator">Administrator Panel</button>
+          <button data-view="students">Student Panel</button>
+          <button data-view="teachers">Teacher Panel</button>
+          <button data-view="teachers-manage">Add / Manage Teacher</button>
+          <button data-view="add-student">Add / Remove Student</button>
+          <button data-view="add-class">Add Class</button>
+          <button data-view="attendance">Attendance</button>
+          <button data-view="search">Search</button>
+          <button data-view="contact">Contact</button>
+          <button data-view="about">About</button>
+          <button data-view="settings">Settings</button>
+          <button
+            id="logoutBtn"
+            style="
+              margin-top: 12px;
+              background: #ef4444;
+              padding: 10px;
+              border-radius: 8px;
+              border: 0;
+              color: #fff;
+            "
+          >
+            Logout
+          </button>
+        </nav>
+
+        <div style="margin-top: 18px; font-size: 13px; color: #94a3b8">
+          Standard International •
+        </div>
+      </aside>
+
+      <main class="main" role="main">
+        <div class="topbar">
+          <div>
+            <h3 id="viewTitle">Home</h3>
+            <div class="muted-sm">Dashboard overview</div>
+          </div>
+          <div class="controls">
+            <div class="pill" id="totalStudents">Students: —</div>
+            <div class="pill" id="totalTeachers">Teachers: —</div>
+          </div>
+        </div>
+
+        <!-- VIEWS -->
+        <section id="home" class="card-panel view">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              gap: 12px;
+              flex-wrap: wrap;
+            "
+          >
+            <div style="flex: 1">
+              <h4>Welcome, Administrator</h4>
+              <p class="muted-sm" style="margin-top: 8px">
+                Use the left navigation to open panels. Below are quick lists
+                and actions.
+              </p>
+            </div>
+            <div style="min-width: 220px; display: flex; gap: 8px">
+              <button class="btn" onclick="openView('add-student')">
+                Add Student
+              </button>
+              <button class="btn" onclick="openView('add-class')">
+                Add Class
+              </button>
+            </div>
+          </div>
+
+          <div style="margin-top: 18px" class="grid">
+            <div class="card-panel">
+              <h4>Quick students</h4>
+              <div style="margin-top: 8px; max-height: 220px; overflow: auto">
+                <table id="quickStudentsTbl">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Class</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card-panel">
+              <h4>Quick teachers</h4>
+              <div style="margin-top: 8px; max-height: 220px; overflow: auto">
+                <table id="quickTeachersTbl">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Subject</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card-panel">
+              <h4>Classes</h4>
+              <div style="margin-top: 8px" id="classList"></div>
+              <div style="margin-top: 8px; color: var(--muted)">
+                Click a class to view its students.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="administrator" class="card-panel view hidden">
+          <h4>Administrator Profile</h4>
+          <div
+            style="
+              display: flex;
+              gap: 18px;
+              margin-top: 12px;
+              align-items: center;
+            "
+          >
+            <img
+              src="https://via.placeholder.com/120"
+              alt="admin"
+              style="width: 120px; border-radius: 8px; object-fit: cover"
+              id="adminPhoto"
+            />
+            <div>
+              <div style="font-weight: 700" id="adminFullName">
+                Joseph Lumumba Dumbuya
+              </div>
+              <div class="muted-sm" id="adminEmailPanel">admin@school.test</div>
+              <div style="margin-top: 8px">
+                Role: <strong>School Administrator</strong>
+              </div>
+              <div style="margin-top: 8px">
+                Phone: <strong>+232 78 856169/+23230416415</strong>
+              </div>
+              <div style="margin-top: 8px; color: var(--muted)">
+                Use the admin panel to edit administrator details
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="students" class="card-panel view hidden">
+          <h4>Students</h4>
+          <div
+            style="
+              margin-top: 12px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <div class="muted-sm">All registered students</div>
+            <div class="form-inline">
+              <input
+                id="student-filter"
+                type="text"
+                placeholder="Filter by name or class"
+                style="
+                  padding: 8px;
+                  border-radius: 8px;
+                  border: 1px solid #e6e9ef;
+                "
+              />
+              <button class="small" onclick="renderStudents()">Refresh</button>
+              <button class="small" onclick="exportCSV('students')">
+                Export CSV
+              </button>
+              <label
+                class="small"
+                style="
+                  background: #f3f4f6;
+                  border-radius: 8px;
+                  padding: 6px 8px;
+                  cursor: pointer;
+                "
+                >Import CSV
+                <input
+                  id="importStudentsCSV"
+                  type="file"
+                  accept="text/csv"
+                  style="display: none"
+                  onchange="importCSV(event,'students')"
+                />
+              </label>
+            </div>
+          </div>
+          <div style="margin-top: 12px; overflow: auto; max-height: 540px">
+            <table id="studentsTbl">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Photo</th>
+                  <th>Full name</th>
+                  <th>Class</th>
+                  <th>DOB / Age</th>
+                  <th>Nationality</th>
+                  <th>Guardian</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="teachers" class="card-panel view hidden">
+          <h4>Teachers</h4>
+          <div
+            style="
+              margin-top: 12px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <div class="muted-sm">All tutors</div>
+            <div class="form-inline">
+              <input
+                id="teacher-filter"
+                type="text"
+                placeholder="Filter by name or subject"
+                style="
+                  padding: 8px;
+                  border-radius: 8px;
+                  border: 1px solid #e6e9ef;
+                "
+              />
+              <button class="small" onclick="renderTeachers()">Refresh</button>
+              <button class="small" onclick="exportCSV('teachers')">
+                Export CSV
+              </button>
+              <label
+                class="small"
+                style="
+                  background: #f3f4f6;
+                  border-radius: 8px;
+                  padding: 6px 8px;
+                  cursor: pointer;
+                "
+                >Import CSV
+                <input
+                  id="importTeachersCSV"
+                  type="file"
+                  accept="text/csv"
+                  style="display: none"
+                  onchange="importCSV(event,'teachers')"
+                />
+              </label>
+            </div>
+          </div>
+          <div style="margin-top: 12px; overflow: auto; max-height: 540px">
+            <table id="teachersTbl">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Photo</th>
+                  <th>Full name</th>
+                  <th>Subject(s)</th>
+                  <th>Nationality</th>
+                  <th>Contact</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+        <!--Teacher -->
+        <section id="teachers-manage" class="card-panel view hidden">
+          <h4>Add / Edit / Remove Teacher</h4>
+          <div
+            style="display: flex; gap: 18px; margin-top: 12px; flex-wrap: wrap"
+          >
+            <form id="teacherForm" style="flex: 1; min-width: 320px">
+              <div class="form-row">
+                <label>Full name</label><input id="t_fullname" type="text" />
+              </div>
+              <div class="form-row">
+                <label>Subjects (comma separated)</label
+                ><input
+                  id="t_subjects"
+                  type="text"
+                  placeholder="Mathematics,Physics"
+                />
+              </div>
+              <div class="form-row">
+                <label>Nationality</label
+                ><input id="t_nationality" type="text" />
+              </div>
+              <div class="form-row">
+                <label>Photo upload (optional)</label
+                ><input id="t_photo_file" type="file" accept="image/*" /><img
+                  id="t_photo_preview"
+                  class="upload-preview"
+                  style="margin-top: 8px"
+                  src="https://via.placeholder.com/84"
+                />
+              </div>
+              <div style="display: flex; gap: 8px; margin-top: 8px">
+                <button class="btn" type="submit">Save teacher</button
+                ><button
+                  type="button"
+                  class="small"
+                  onclick="resetTeacherForm()"
+                >
+                  Reset
+                </button>
+              </div>
+            </form>
+
+            <div style="flex: 1; min-width: 280px">
+              <h4>Teacher Timetable / Assignments</h4>
+              <div id="teachersAssignments" style="margin-top: 8px"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="add-student" class="card-panel view hidden">
+          <h4>Add / Remove Student</h4>
+          <div
+            style="display: flex; gap: 18px; margin-top: 12px; flex-wrap: wrap"
+          >
+            <form id="addStudentForm" style="flex: 1; min-width: 320px">
+              <div class="form-row">
+                <label>Full name</label>
+                <input id="s_fullname" required type="text" />
+              </div>
+              <div class="form-row">
+                <label>Class</label>
+                <select id="s_class"></select>
+              </div>
+              <div class="form-row">
+                <label>Date of birth</label>
+                <input id="s_dob" type="date" />
+              </div>
+              <div class="form-row">
+                <label>Nationality</label>
+                <input id="s_nationality" type="text" />
+              </div>
+              <div class="form-row">
+                <label>Guardian name</label>
+                <input id="s_guardian" type="text" />
+              </div>
+              <div class="form-row">
+                <label>Photo upload (optional)</label>
+                <input id="s_photo_file" type="file" accept="image/*" />
+                <img
+                  id="s_photo_preview"
+                  class="upload-preview"
+                  style="margin-top: 8px"
+                  src="https://via.placeholder.com/84"
+                />
+              </div>
+              <div style="display: flex; gap: 8px; margin-top: 8px">
+                <button class="btn" type="submit">Add student</button>
+                <button type="button" class="small" onclick="populateSample()">
+                  Load sample students
+                </button>
+              </div>
+            </form>
+
+            <div style="min-width: 320px; flex: 1">
+              <div style="margin-bottom: 8px">Remove student by ID</div>
+              <div style="display: flex; gap: 8px">
+                <input id="removeId" placeholder="student id" /><button
+                  class="small"
+                  onclick="removeStudent()"
+                >
+                  Remove
+                </button>
+              </div>
+              <div style="margin-top: 12px; color: var(--muted)">
+                Note: IDs are auto-generated. Removal is immediate and stored
+                locally.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ADD CLASS -->
+        <section id="add-class" class="card-panel view hidden">
+          <h4>Classes</h4>
+          <div
+            style="display: flex; gap: 18px; margin-top: 12px; flex-wrap: wrap"
+          >
+            <div style="flex: 1; min-width: 280px">
+              <form id="addClassForm">
+                <label>Class name</label>
+                <input id="c_name" placeholder="e.g., Grade 1, Form 3" />
+                <div style="margin-top: 8px">
+                  <button class="btn">Add class</button>
+                </div>
+              </form>
+            </div>
+
+            <div style="flex: 1; min-width: 280px">
+              <h4>Existing classes</h4>
+              <div id="classListPanel" style="margin-top: 8px"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ATTENDANCE -->
+
+        <section id="attendance" class="card-panel view hidden">
+          <h4>Attendance</h4>
+          <div
+            style="
+              margin-top: 12px;
+              display: flex;
+              gap: 12px;
+              align-items: center;
+            "
+          >
+            <input id="attendanceDate" type="date" value="" />
+            <select id="attendanceClass"></select>
+            <button class="btn" onclick="loadAttendance()">Load</button>
+            <button class="small" onclick="exportAttendance()">
+              Export CSV
+            </button>
+          </div>
+          <div
+            id="attendanceList"
+            style="margin-top: 12px; max-height: 480px; overflow: auto"
+          ></div>
+        </section>
+
+        <!-- SEARCH -->
+        <section id="search" class="card-panel view hidden">
+          <h4>Search Students / Teachers</h4>
+          <div style="margin-top: 12px; display: flex; gap: 8px">
+            <input
+              id="unifiedSearch"
+              placeholder="Search by name or ID"
+              style="
+                flex: 1;
+                padding: 10px;
+                border-radius: 8px;
+                border: 1px solid #e6e9ef;
+              "
+            />
+            <button class="btn" onclick="doSearch()">Search</button>
+          </div>
+          <div id="searchResults" style="margin-top: 12px"></div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact" class="card-panel view hidden">
+          <h4>Contact</h4>
+          <div style="margin-top: 12px">
+            <div>
+              <strong>Emergency phone:</strong> +232 78 856 169 / +232 30 416
+              415
+            </div>
+            <div style="margin-top: 6px">
+              <strong>Email:</strong> info@standardintern.sch
+            </div>
+            <div style="margin-top: 6px">
+              <strong>Address:</strong> Jomokenyatta Road, New England Ville,
+              Freetown, Sierra Leone
+            </div>
+          </div>
+        </section>
+
+        <!-- ABOUT -->
+
+        <section id="about" class="card-panel view hidden">
+          <h4>About Standard International</h4>
+          <div style="margin-top: 12px">
+            The advent of digital technologies has transformed various sectors,
+            including education. Educational institutions are increasingly
+            leveraging technology to streamline administrative processes,
+            enhance learning experiences, and improve overall efficiency.
+            Standards International School (S.I.S.), originally founded as
+            Virtues International Academy on September 15, 2008, by four Sierra
+            Leoneans—Nathaniel Sankoh, Idrissa Conteh, Alphonse Bartholomew
+            Sesay, and another—has been at the forefront of providing quality
+            education in the Brookfield community. Initially offering evening
+            lessons for students preparing for BECE (Basic Education Certificate
+            Examination) and WASSCE (West African Senior School Certificate
+            Examination), the school evolved into a formal educational
+            institution due to the high demand for quality education and the
+            success of these lessons. Today, Standards International School is
+            fully registered with the Ministry of Education, Science, and
+            Technology and the West African Examinations Council (WAEC). The
+            school has produced numerous graduates who have excelled in various
+            fields, both locally and internationally. Despite its achievements,
+            the school continues to face challenges in managing its student
+            registration processes, which are currently handled manually. These
+            challenges include time-consuming procedures, high administrative
+            costs, and the potential for data inaccuracies. This dissertation
+            addresses these challenges by proposing the development of a
+            Standard International School Registration Portal—a web-based
+            application designed to automate and streamline student registration
+            and management. .
+          </div>
+          <div style="margin-top: 12px">
+            <img
+              src="SIS.jpg"
+              alt="badge"
+              style="border-radius: 8px"
+              width="300"
+              height="400"
+            />>
+          </div>
+        </section>
+
+        <!-- SETTING -->
+        <section id="settings" class="card-panel view hidden">
+          <h4>Settings</h4>
+          <div
+            style="
+              margin-top: 12px;
+              display: flex;
+              flex-direction: column;
+              gap: 12px;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <div>Theme</div>
+              <div>
+                <button class="small" onclick="setTheme('light')">Light</button>
+                <button class="small" onclick="setTheme('dark')">Dark</button>
+              </div>
+            </div>
+
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <div>School branding (logo)</div>
+              <div style="display: flex; align-items: center; gap: 12px">
+                <input id="brandLogoFile" type="file" accept="image/*" />
+                <img
+                  id="brandLogoPreview"
+                  class="upload-preview"
+                  src="https://via.placeholder.com/84"
+                />
+              </div>
+            </div>
+
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <div>Export / Backup</div>
+              <div>
+                <button class="small" onclick="backupData()">
+                  Download backup (JSON)
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      /* ================= DEMO DATA ================= */
+      const sampleStudents = [
+        {
+          id: "S-1001",
+          fullname: "Joseph Lumumba Dumbuya",
+          class: "Grade 1",
+          dob: "2016-05-12",
+          nationality: "Sierra Leonean",
+          ethnic: "Limba",
+          photo: "https://via.placeholder.com/48",
+          guardian: "Fatmata Conteh",
+          address: "No.4 Lumley St",
+          email: "aisha@example.com",
+        },
+        {
+          id: "S-1002",
+          fullname: "Sarah Olive Sungu",
+          class: "Grade 2",
+          dob: "2015-02-20",
+          nationality: "Sierra Leonean",
+          ethnic: "Temne",
+          photo: "https://via.placeholder.com/48",
+          guardian: "Alhaji Bangura",
+          address: "No.2 King Tom",
+          email: "mohamed@example.com",
+        },
+        {
+          id: "S-1003",
+          fullname: "Claudelson I. Kamara",
+          class: "Grade 3",
+          dob: "2014-07-01",
+          nationality: "Sierra Leonean",
+          ethnic: "Krio",
+          photo: "https://via.placeholder.com/48",
+          guardian: "Helen Johnson",
+          address: "No.12 Hill",
+          email: "priscilla@example.com",
+        },
+        {
+          id: "S-1004",
+          fullname: "Bertram Macauley",
+          class: "Form 1",
+          dob: "2008-11-11",
+          nationality: "Sierra Leonean",
+          ethnic: "Limba",
+          photo: "https://via.placeholder.com/48",
+          guardian: "Isaac Kamara",
+          address: "No.7 Brook",
+          email: "david@example.com",
+        },
+        {
+          id: "S-1005",
+          fullname: "Noah Kai Moudah",
+          class: "Form 2",
+          dob: "2007-09-09",
+          nationality: "Sierra Leonean",
+          ethnic: "Kono",
+          photo: "https://via.placeholder.com/48",
+          guardian: "Mariatu Mansaray",
+          address: "No.8 Regent",
+          email: "fatmata@example.com",
+        },
+        {
+          id: "S-1006",
+          fullname: "Harry Salter",
+          class: "Grade 4",
+          dob: "2013-03-30",
+          nationality: "Sierra Leonean",
+          ethnic: "Sherbro",
+          photo: "https://via.placeholder.com/48",
+          guardian: "Grace Tucker",
+          address: "No.22 Aberdeen",
+          email: "joseph@example.com",
+        },
+        {
+          id: "S-1007",
+          fullname: "Fatima Korma",
+          class: "Grade 5",
+          dob: "2012-12-12",
+          nationality: "Sierra Leonean",
+          ethnic: "Temne",
+          photo: "https://via.placeholder.com/48",
+          guardian: "Comfort Sesay",
+          address: "No.5 Brookfields",
+          email: "rebecca@example.com",
+        },
+        {
+          id: "S-1008",
+          fullname: "James Tommy",
+          class: "Form 3",
+          dob: "2006-04-04",
+          nationality: "Liberian",
+          ethnic: "Kru",
+          photo: "https://via.placeholder.com/48",
+          guardian: "Sandra Rogers",
+          address: "No.3 Wilkinson",
+          email: "michael@example.com",
+        },
+        {
+          id: "S-1009",
+          fullname: "Foday Dumbuya",
+          class: "Grade 6",
+          dob: "2010-08-19",
+          nationality: "Sierra Leonean",
+          ethnic: "Krio",
+          photo: "https://via.placeholder.com/48",
+          guardian: "Mary Cole",
+          address: "No.9 Tower",
+          email: "esther@example.com",
+        },
+        {
+          id: "S-1010",
+          fullname: "Sallay Dumbuya",
+          class: "Grade 1",
+          dob: "2016-09-05",
+          nationality: "Sierra Leonean",
+          ethnic: "Mende",
+          photo: "https://via.placeholder.com/48",
+          guardian: "Peter Smith",
+          address: "No.40 King Tom",
+          email: "andrew@example.com",
+        },
+        {
+          id: "S-1011",
+          fullname: "David Dumbuya",
+          class: "Form 1",
+          dob: "2009-01-01",
+          nationality: "Sierra Leonean",
+          ethnic: "Temne",
+          photo: "https://via.placeholder.com/48",
+          guardian: "Abdul Bah",
+          address: "No.15 Regent",
+          email: "hawa@example.com",
+        },
+        {
+          id: "S-1012",
+          fullname: "Kumba Koroma",
+          class: "Grade 3",
+          dob: "2014-10-25",
+          nationality: "Sierra Leonean",
+          ethnic: "Mende",
+          photo: "https://via.placeholder.com/48",
+          guardian: "Paul Koroma",
+          address: "No.6 Wilberforce",
+          email: "kumba@example.com",
+        },
+        {
+          id: "S-1013",
+          fullname: "Regina Sia Allieu",
+          class: "Grade 2",
+          dob: "2015-06-10",
+          nationality: "Sierra Leonean",
+          ethnic: "Sherbro",
+          photo: "https://via.placeholder.com/48",
+          guardian: "Ellen Peters",
+          address: "No.2 Hill",
+          email: "daniel@example.com",
+        },
+        {
+          id: "S-1014",
+          fullname: "Joseph Moris Jackson",
+          class: "Form 2",
+          dob: "2007-02-02",
+          nationality: "Sierra Leonean",
+          ethnic: "Krio",
+          photo: "https://via.placeholder.com/48",
+          guardian: "Sarah Johnson",
+          address: "No.44 Lumley",
+          email: "ruth@example.com",
+        },
+        {
+          id: "S-1015",
+          fullname: "Peter Davies",
+          class: "Form 3",
+          dob: "2006-11-22",
+          nationality: "Sierra Leonean",
+          ethnic: "Kono",
+          photo: "https://via.placeholder.com/48",
+          guardian: "Olivia Davies",
+          address: "No.30 Tower",
+          email: "peter@example.com",
+        },
+      ];
+
+      const sampleTeachers = [
+        {
+          id: "T-2001",
+          fullname: "Madam Olive Sungu",
+          subjects: ["Mathematics"],
+          nationality: "Sierra Leonean",
+          photo: "https://via.placeholder.com/48",
+          email: "grace.w@example.com",
+          address: "No.1 Tower",
+          timetable: "Mon 9-11 Math",
+        },
+        {
+          id: "T-2002",
+          fullname: "Mr. John Sesay",
+          subjects: ["English"],
+          nationality: "Sierra Leonean",
+          photo: "https://via.placeholder.com/48",
+          email: "john.s@example.com",
+          address: "No.21 Hill",
+          timetable: "Tue 10-12 English",
+        },
+        {
+          id: "T-2003",
+          fullname: "Mr. Bertram Sesay",
+          subjects: ["Science"],
+          nationality: "Sierra Leonean",
+          photo: "https://via.placeholder.com/48",
+          email: "mariam.k@example.com",
+          address: "No.6 Regent",
+          timetable: "Wed 9-11 Science",
+        },
+        {
+          id: "T-2004",
+          fullname: "Mr. Harry Salter",
+          subjects: ["History"],
+          nationality: "British",
+          photo: "https://via.placeholder.com/48",
+          email: "peter.b@example.com",
+          address: "No.2 Wilkinson",
+          timetable: "Thu 11-1 History",
+        },
+        {
+          id: "T-2005",
+          fullname: "Mrs. Dumbuya",
+          subjects: ["Geography"],
+          nationality: "Sierra Leonean",
+          photo: "https://via.placeholder.com/48",
+          email: "comfort.b@example.com",
+          address: "No.8 Brooks",
+          timetable: "Fri 9-11 Geo",
+        },
+        {
+          id: "T-2006",
+          fullname: "Miss. Aminata Koroma",
+          subjects: ["ICT"],
+          nationality: "Sierra Leonean",
+          photo: "https://via.placeholder.com/48",
+          email: "aminata.k@example.com",
+          address: "No.11 Lumley",
+          timetable: "Mon 1-3 ICT",
+        },
+        {
+          id: "T-2007",
+          fullname: "Samuel Conteh",
+          subjects: ["Art"],
+          nationality: "Sierra Leonean",
+          photo: "https://via.placeholder.com/48",
+          email: "samuel.c@example.com",
+          address: "No.14 Regent",
+          timetable: "Tue 1-3 Art",
+        },
+        {
+          id: "T-2008",
+          fullname: "Linda Thomas",
+          subjects: ["Physical Education"],
+          nationality: "Sierra Leonean",
+          photo: "https://via.placeholder.com/48",
+          email: "linda.t@example.com",
+          address: "No.7 King Tom",
+          timetable: "Wed 2-4 PE",
+        },
+        {
+          id: "T-2009",
+          fullname: "Abdulai Kamara",
+          subjects: ["Biology"],
+          nationality: "Sierra Leonean",
+          photo: "https://via.placeholder.com/48",
+          email: "abdulai.k@example.com",
+          address: "No.19 Hill",
+          timetable: "Thu 9-11 Bio",
+        },
+        {
+          id: "T-2010",
+          fullname: "Rebecca Smith",
+          subjects: ["Chemistry"],
+          nationality: "Sierra Leonean",
+          photo: "https://via.placeholder.com/48",
+          email: "rebecca.s@example.com",
+          address: "No.23 Brook",
+          timetable: "Fri 11-1 Chem",
+        },
+      ];
+
+      /* ================ STORAGE HELPERS ================ */
+      function load(key, fallback) {
+        try {
+          const raw = localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch (e) {
+          return fallback;
+        }
+      }
+      function save(key, data) {
+        localStorage.setItem(key, JSON.stringify(data));
+      }
+
+      let students = load("sis_students", sampleStudents.slice());
+      let teachers = load("sis_teachers", sampleTeachers.slice());
+      let classes = load("sis_classes", [
+        "Grade 1",
+        "Grade 2",
+        "Grade 3",
+        "Grade 4",
+        "Grade 5",
+        "Form 1",
+        "Form 2",
+        "Form 3",
+      ]);
+      let attendance = load("sis_attendance", {});
+      let branding = load("sis_branding", { logo: "" });
+
+      /* ================ UTILS ================ */
+      function uid(prefix = "S") {
+        return prefix + "-" + Math.floor(1000 + Math.random() * 9000);
+      }
+      function ageFromDob(dob) {
+        if (!dob) return "";
+        const diff = new Date() - new Date(dob);
+        return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+      }
+
+      /* ================ NAV & VIEWS ================ */
+      const navBtns = document.querySelectorAll("#nav button[data-view]");
+      navBtns.forEach((btn) =>
+        btn.addEventListener("click", () => openView(btn.dataset.view))
+      );
+
+      function openView(name) {
+        document
+          .querySelectorAll(".view")
+          .forEach((v) => v.classList.add("hidden"));
+        const el = document.getElementById(name);
+        if (!el) return;
+        el.classList.remove("hidden");
+        navBtns.forEach((b) =>
+          b.classList.toggle("active", b.dataset.view === name)
+        );
+        document.getElementById("viewTitle").textContent = (
+          name.charAt(0).toUpperCase() + name.slice(1)
+        ).replace(/-/g, " ");
+        // dynamic renders
+        if (name === "home") renderQuick();
+        if (name === "students") renderStudents();
+        if (name === "teachers") renderTeachers();
+        if (name === "add-class") renderClassPanel();
+        if (name === "administrator") renderAdminPanel();
+        if (name === "attendance") renderAttendancePanel();
+        if (name === "teachers-manage") renderTeachersAssignments();
+        if (name === "settings") renderSettings();
+      }
+
+      /* ================ LOGIN (fixed) ================ */
+      function handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById("loginEmail").value.trim();
+        const pw = document.getElementById("loginPassword").value.trim();
+        const demoEmail = "admin@school.test";
+        const demoPw = "admin123";
+        if (email === demoEmail && pw === demoPw) {
+          // show app
+          document.getElementById("splash").classList.add("hidden");
+          document.getElementById("app").classList.remove("hidden");
+          document.getElementById("app").removeAttribute("aria-hidden");
+          document.getElementById("adminEmail").textContent = email;
+          localStorage.setItem("sis_logged", "admin");
+          refreshTotals();
+          renderQuick();
+          document.getElementById("loginError").style.display = "none";
+        } else {
+          document.getElementById("loginError").style.display = "block";
+        }
+      }
+
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        localStorage.removeItem("sis_logged");
+        document.getElementById("app").classList.add("hidden");
+        document.getElementById("splash").classList.remove("hidden");
+      });
+
+      /* ================ THEME & BRANDING ================ */
+      function setTheme(t) {
+        document.body.setAttribute("data-theme", t);
+        localStorage.setItem("sis_theme", t);
+      }
+      function renderSettings() {
+        const stored = localStorage.getItem("sis_theme") || "light";
+        document.body.setAttribute("data-theme", stored);
+        const logo = branding.logo || "";
+        if (logo) document.getElementById("brandLogoPreview").src = logo;
+      }
+      document
+        .getElementById("brandLogoFile")
+        .addEventListener("change", (e) => {
+          const f = e.target.files[0];
+          if (!f) return;
+          const r = new FileReader();
+          r.onload = () => {
+            branding.logo = r.result;
+            save("sis_branding", branding);
+            document.getElementById("brandLogoPreview").src = r.result;
+          };
+          r.readAsDataURL(f);
+        });
+
+      /* ================ RENDER HELPERS ================ */
+      function refreshTotals() {
+        document.getElementById("totalStudents").textContent =
+          "Students: " + (students.length || 0);
+        document.getElementById("totalTeachers").textContent =
+          "Teachers: " + (teachers.length || 0);
+      }
+
+      function renderQuick() {
+        const qs = document.querySelector("#quickStudentsTbl tbody");
+        qs.innerHTML = "";
+        students.slice(0, 6).forEach((s, i) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td>${i + 1}</td><td>${s.fullname}</td><td>${
+            s.class || ""
+          }</td>`;
+          qs.appendChild(tr);
+        });
+        const qt = document.querySelector("#quickTeachersTbl tbody");
+        qt.innerHTML = "";
+        teachers.slice(0, 6).forEach((t, i) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td>${i + 1}</td><td>${t.fullname}</td><td>${(
+            t.subjects || []
+          )
+            .slice(0, 2)
+            .join(", ")}</td>`;
+          qt.appendChild(tr);
+        });
+        const cl = document.getElementById("classList");
+        cl.innerHTML = classes
+          .map(
+            (c) =>
+              `<div class="chip" onclick="openClass('${c.replace(
+                /'/g,
+                "\\'"
+              )}')">${c}</div>`
+          )
+          .join(" ");
+        refreshTotals();
+      }
+
+      function openClass(className) {
+        openView("students");
+        document.getElementById("student-filter").value = className;
+        renderStudents();
+      }
+
+      function renderStudents() {
+        const filter = (
+          document.getElementById("student-filter").value || ""
+        ).toLowerCase();
+        const tbody = document.querySelector("#studentsTbl tbody");
+        tbody.innerHTML = "";
+        students
+          .filter(
+            (s) =>
+              !filter ||
+              s.fullname.toLowerCase().includes(filter) ||
+              (s.class || "").toLowerCase().includes(filter) ||
+              s.id.toLowerCase().includes(filter)
+          )
+          .forEach((s) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${s.id}</td><td><img class="photo-thumb" src="${
+              s.photo || "https://via.placeholder.com/48"
+            }"></td><td>${s.fullname}</td><td>${s.class || ""}</td><td>${
+              s.dob ? s.dob + " / " + ageFromDob(s.dob) + "y" : ""
+            }</td><td>${s.nationality || ""}</td><td>${
+              s.guardian || ""
+            }</td><td><button class="small" onclick="editStudent('${
+              s.id
+            }')">Edit</button> <button class="small" onclick="deleteStudent('${
+              s.id
+            }')">Delete</button></td>`;
+            tbody.appendChild(tr);
+          });
+      }
+
+      function renderTeachers() {
+        const filter = (
+          document.getElementById("teacher-filter")?.value || ""
+        ).toLowerCase();
+        const tbody = document.querySelector("#teachersTbl tbody");
+        tbody.innerHTML = "";
+        teachers
+          .filter(
+            (t) =>
+              !filter ||
+              t.fullname.toLowerCase().includes(filter) ||
+              (t.subjects || []).join(",").toLowerCase().includes(filter) ||
+              t.id.toLowerCase().includes(filter)
+          )
+          .forEach((t) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${t.id}</td><td><img class="photo-thumb" src="${
+              t.photo || "https://via.placeholder.com/48"
+            }"></td><td>${t.fullname}</td><td>${(t.subjects || []).join(
+              ", "
+            )}</td><td>${t.nationality || ""}</td><td>${
+              t.email || ""
+            }</td><td><button class="small" onclick="loadTeacher('${
+              t.id
+            }')">Edit</button> <button class="small" onclick="deleteTeacher('${
+              t.id
+            }')">Delete</button></td>`;
+            tbody.appendChild(tr);
+          });
+      }
+
+      /* ================ STUDENT CRUD & UPLOAD (Base64) ================ */
+      document
+        .getElementById("s_photo_file")
+        .addEventListener("change", (e) => {
+          const f = e.target.files[0];
+          if (!f) return;
+          const r = new FileReader();
+          r.onload = () => {
+            document.getElementById("s_photo_preview").src = r.result;
+            document.getElementById("s_photo_preview").dataset.base64 =
+              r.result;
+          };
+          r.readAsDataURL(f);
+        });
+
+      document
+        .getElementById("addStudentForm")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+          const fullname = document.getElementById("s_fullname").value.trim();
+          const klass = document.getElementById("s_class").value;
+          const dob = document.getElementById("s_dob").value;
+          const nat = document.getElementById("s_nationality").value.trim();
+          const guardian = document.getElementById("s_guardian").value.trim();
+          const photo =
+            document.getElementById("s_photo_preview").dataset.base64 ||
+            document.getElementById("s_photo_preview").src ||
+            "https://via.placeholder.com/48";
+          if (!fullname) {
+            return alert("Enter full name");
+          }
+          const newS = {
+            id: uid("S"),
+            fullname,
+            class: klass,
+            dob,
+            nationality: nat,
+            ethnic: "-",
+            photo,
+            guardian,
+            address: "",
+            email: "",
+          };
+          students.unshift(newS);
+          save("sis_students", students);
+          renderStudents();
+          refreshTotals();
+          alert("Student added: " + fullname);
+          e.target.reset();
+          document.getElementById("s_photo_preview").src =
+            "https://via.placeholder.com/84";
+          delete document.getElementById("s_photo_preview").dataset.base64;
+        });
+
+      function removeStudent() {
+        const id = document.getElementById("removeId").value.trim();
+        if (!id) return alert("Enter student id");
+        const idx = students.findIndex((s) => s.id === id);
+        if (idx === -1) return alert("Student not found");
+        if (!confirm("Remove " + students[idx].fullname + "?")) return;
+        students.splice(idx, 1);
+        save("sis_students", students);
+        renderStudents();
+        refreshTotals();
+        alert("Removed");
+      }
+
+      function deleteStudent(id) {
+        if (!confirm("Delete " + id + "?")) return;
+        students = students.filter((s) => s.id !== id);
+        save("sis_students", students);
+        renderStudents();
+        refreshTotals();
+      }
+
+      function editStudent(id) {
+        const s = students.find((x) => x.id === id);
+        if (!s) return alert("Student not found");
+        document.getElementById("s_fullname").value = s.fullname;
+        document.getElementById("s_class").value = s.class || "";
+        document.getElementById("s_dob").value = s.dob || "";
+        document.getElementById("s_nationality").value = s.nationality || "";
+        document.getElementById("s_guardian").value = s.guardian || "";
+        document.getElementById("s_photo_preview").src =
+          s.photo || "https://via.placeholder.com/84";
+        // We keep edit simple: user can add as new and remove the old one if needed
+        openView("add-student");
+        alert(
+          "Loaded into Add/Remove panel for quick edit. To update: add as new then remove original."
+        );
+      }
+
+      /* ================ CLASSES ================ */
+      document
+        .getElementById("addClassForm")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+          const name = document.getElementById("c_name").value.trim();
+          if (!name) return alert("Enter class name");
+          classes.push(name);
+          save("sis_classes", classes);
+          renderClassPanel();
+          document.getElementById("c_name").value = "";
+        });
+
+      function renderClassPanel() {
+        document.getElementById("s_class").innerHTML = classes
+          .map((c) => `<option value="${c}">${c}</option>`)
+          .join("");
+        document.getElementById("attendanceClass").innerHTML = ["All"]
+          .concat(classes)
+          .map((c) => `<option value="${c}">${c}</option>`)
+          .join("");
+        document.getElementById("classListPanel").innerHTML = classes
+          .map(
+            (c, i) =>
+              `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;background:#fbfdff;margin-bottom:6px;border-radius:6px"><div>${c}</div><div><button class="small" onclick="removeClass(${i})">Delete</button></div></div>`
+          )
+          .join("");
+        document.getElementById("classList").innerHTML = classes
+          .map(
+            (c) =>
+              `<div class="chip" onclick="openClass('${c.replace(
+                /'/g,
+                "\\'"
+              )}')">${c}</div>`
+          )
+          .join(" ");
+      }
+
+      function removeClass(i) {
+        if (!confirm("Delete class " + classes[i] + "?")) return;
+        classes.splice(i, 1);
+        save("sis_classes", classes);
+        renderClassPanel();
+      }
+
+      /* ================ SEARCH ================ */
+      function doSearch() {
+        const q = (document.getElementById("unifiedSearch").value || "")
+          .trim()
+          .toLowerCase();
+        if (!q) return alert("Type a name or ID");
+        const sres = students.filter(
+          (s) =>
+            s.fullname.toLowerCase().includes(q) ||
+            s.id.toLowerCase() === q ||
+            (s.class || "").toLowerCase().includes(q)
+        );
+        const tres = teachers.filter(
+          (t) =>
+            t.fullname.toLowerCase().includes(q) ||
+            t.id.toLowerCase() === q ||
+            (t.subjects || []).join(",").toLowerCase().includes(q)
+        );
+        const out = document.getElementById("searchResults");
+        out.innerHTML = "";
+        if (sres.length) {
+          out.innerHTML +=
+            "<h4>Students</h4>" +
+            "<div>" +
+            sres
+              .map(
+                (s) =>
+                  `<div style="padding:8px;background:#fff;margin-bottom:6px;border-radius:6px">${
+                    s.id
+                  } — <strong>${s.fullname}</strong> <span class="muted-sm">${
+                    s.class || ""
+                  }</span></div>`
+              )
+              .join("") +
+            "</div>";
+        }
+        if (tres.length) {
+          out.innerHTML +=
+            '<h4 style="margin-top:12px">Teachers</h4>' +
+            "<div>" +
+            tres
+              .map(
+                (t) =>
+                  `<div style="padding:8px;background:#fff;margin-bottom:6px;border-radius:6px">${
+                    t.id
+                  } — <strong>${t.fullname}</strong> <span class="muted-sm">${(
+                    t.subjects || []
+                  ).join(", ")}</span></div>`
+              )
+              .join("") +
+            "</div>";
+        }
+        if (!sres.length && !tres.length)
+          out.innerHTML = '<div class="muted-sm">No results</div>';
+      }
+
+      /* ================ TEACHER CRUD ================ */
+      document
+        .getElementById("t_photo_file")
+        .addEventListener("change", (e) => {
+          const f = e.target.files[0];
+          if (!f) return;
+          const r = new FileReader();
+          r.onload = () => {
+            document.getElementById("t_photo_preview").src = r.result;
+            document.getElementById("t_photo_preview").dataset.base64 =
+              r.result;
+          };
+          r.readAsDataURL(f);
+        });
+
+      document.getElementById("teacherForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const fullname = document.getElementById("t_fullname").value.trim();
+        const subjects = (document.getElementById("t_subjects").value || "")
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const nat = document.getElementById("t_nationality").value.trim();
+        const photo =
+          document.getElementById("t_photo_preview").dataset.base64 ||
+          document.getElementById("t_photo_preview").src ||
+          "https://via.placeholder.com/48";
+        const editingId =
+          document.getElementById("teacherForm").dataset.editing;
+        if (editingId) {
+          const idx = teachers.findIndex((t) => t.id === editingId);
+          if (idx > -1) {
+            teachers[idx].fullname = fullname;
+            teachers[idx].subjects = subjects;
+            teachers[idx].nationality = nat;
+            teachers[idx].photo = photo;
+          }
+          delete document.getElementById("teacherForm").dataset.editing;
+          alert("Teacher updated");
+        } else {
+          const newT = {
+            id: uid("T"),
+            fullname,
+            subjects,
+            nationality: nat,
+            photo,
+            email: "",
+            address: "",
+            timetable: "",
+          };
+          teachers.unshift(newT);
+          alert("Teacher added");
+        }
+        save("sis_teachers", teachers);
+        renderTeachers();
+        renderTeachersAssignments();
+        refreshTotals();
+        e.target.reset();
+        document.getElementById("t_photo_preview").src =
+          "https://via.placeholder.com/84";
+        delete document.getElementById("t_photo_preview").dataset.base64;
+        openView("teachers");
+      });
+
+      function loadTeacher(id) {
+        const t = teachers.find((x) => x.id === id);
+        if (!t) return alert("Teacher not found");
+        document.getElementById("t_fullname").value = t.fullname;
+        document.getElementById("t_subjects").value = (t.subjects || []).join(
+          ","
+        );
+        document.getElementById("t_nationality").value = t.nationality || "";
+        document.getElementById("t_photo_preview").src =
+          t.photo || "https://via.placeholder.com/84";
+        document.getElementById("teacherForm").dataset.editing = id;
+        openView("teachers-manage");
+      }
+
+      function deleteTeacher(id) {
+        if (!confirm("Delete teacher " + id + "?")) return;
+        teachers = teachers.filter((t) => t.id !== id);
+        save("sis_teachers", teachers);
+        renderTeachers();
+        renderTeachersAssignments();
+        refreshTotals();
+      }
+
+      function resetTeacherForm() {
+        delete document.getElementById("teacherForm").dataset.editing;
+        document.getElementById("teacherForm").reset();
+        document.getElementById("t_photo_preview").src =
+          "https://via.placeholder.com/84";
+      }
+
+      function renderTeachersAssignments() {
+        document.getElementById("teachersAssignments").innerHTML = teachers
+          .map(
+            (t) =>
+              `<div style="padding:8px;background:#fbfdff;margin-bottom:6px;border-radius:6px"><div style="display:flex;justify-content:space-between"><div><strong>${
+                t.fullname
+              }</strong><div class="muted-sm">${(t.subjects || []).join(
+                ", "
+              )} • ${
+                t.timetable || ""
+              }</div></div><div><button class="small" onclick="startAssign('${
+                t.id
+              }')">Assign</button></div></div></div>`
+          )
+          .join("");
+      }
+
+      function startAssign(id) {
+        const t = teachers.find((x) => x.id === id);
+        const newTimetable = prompt(
+          "Edit timetable / note for " + t.fullname,
+          t.timetable || ""
+        );
+        if (newTimetable !== null) {
+          t.timetable = newTimetable;
+          save("sis_teachers", teachers);
+          renderTeachersAssignments();
+          alert("Saved");
+        }
+      }
+
+      /* ================ CSV IMPORT/EXPORT ================ */
+      function exportCSV(type) {
+        let rows = [];
+        if (type === "students") {
+          rows = [
+            [
+              "id",
+              "fullname",
+              "class",
+              "dob",
+              "nationality",
+              "guardian",
+              "email",
+            ],
+          ].concat(
+            students.map((s) => [
+              s.id,
+              s.fullname,
+              s.class || "",
+              "" + (s.dob || ""),
+              s.nationality || "",
+              s.guardian || "",
+              s.email || "",
+            ])
+          );
+        } else if (type === "teachers") {
+          rows = [
+            ["id", "fullname", "subjects", "nationality", "email", "timetable"],
+          ].concat(
+            teachers.map((t) => [
+              t.id,
+              t.fullname,
+              (t.subjects || []).join(";"),
+              t.nationality || "",
+              t.email || "",
+              t.timetable || "",
+            ])
+          );
+        }
+        const csv = rows
+          .map((r) =>
+            r.map((c) => `"${("" + c).replace(/"/g, '""')}"`).join(",")
+          )
+          .join("\n");
+        const blob = new Blob([csv], { type: "text/csv" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download =
+          type + "-" + new Date().toISOString().slice(0, 10) + ".csv";
+        a.click();
+      }
+
+      function importCSV(e, type) {
+        const f = e.target.files[0];
+        if (!f) return;
+        const r = new FileReader();
+        r.onload = () => {
+          const txt = r.result;
+          const lines = txt.split(/\r?\n/).filter(Boolean);
+          if (lines.length === 0) return alert("Empty file");
+          const headers = parseCSVLine(lines.shift());
+          const data = lines.map((l) => {
+            const cols = parseCSVLine(l);
+            const obj = {};
+            headers.forEach((h, i) => (obj[h] = cols[i] || ""));
+            return obj;
+          });
+          if (type === "students") {
+            students = data.map((d) => ({
+              id: d.id || uid("S"),
+              fullname: d.fullname || "",
+              class: d.class || "",
+              dob: d.dob || "",
+              nationality: d.nationality || "",
+              guardian: d.guardian || "",
+              photo: "https://via.placeholder.com/48",
+              email: d.email || "",
+            }));
+            save("sis_students", students);
+            renderStudents();
+            refreshTotals();
+            alert("Students imported");
+          } else if (type === "teachers") {
+            teachers = data.map((d) => ({
+              id: d.id || uid("T"),
+              fullname: d.fullname || "",
+              subjects: (d.subjects || "")
+                .split(";")
+                .map((s) => s.trim())
+                .filter(Boolean),
+              nationality: d.nationality || "",
+              photo: "https://via.placeholder.com/48",
+              email: d.email || "",
+              timetable: d.timetable || "",
+            }));
+            save("sis_teachers", teachers);
+            renderTeachers();
+            renderTeachersAssignments();
+            refreshTotals();
+            alert("Teachers imported");
+          }
+        };
+        r.readAsText(f);
+      }
+
+      // Simple CSV line parser that respects quoted values (handles commas inside quotes)
+      function parseCSVLine(line) {
+        const res = [];
+        let cur = "";
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const ch = line[i];
+          if (ch === '"') {
+            if (inQuotes && line[i + 1] === '"') {
+              cur += '"';
+              i++;
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (ch === "," && !inQuotes) {
+            res.push(cur);
+            cur = "";
+          } else {
+            cur += ch;
+          }
+        }
+        res.push(cur);
+        return res.map((s) => s.replace(/^"(.*)"$/, "$1"));
+      }
+
+      /* ================ ATTENDANCE ================ */
+      function renderAttendancePanel() {
+        const today = new Date().toISOString().slice(0, 10);
+        document.getElementById("attendanceDate").value =
+          document.getElementById("attendanceDate").value || today;
+        document.getElementById("attendanceClass").innerHTML = ["All"]
+          .concat(classes)
+          .map((c) => `<option value="${c}">${c}</option>`)
+          .join("");
+        loadAttendance();
+      }
+
+      function loadAttendance() {
+        const date = document.getElementById("attendanceDate").value;
+        const cls = document.getElementById("attendanceClass").value;
+        if (!date) return alert("Select date");
+        const records = attendance[date] || {};
+        const list = students.filter((s) => cls === "All" || s.class === cls);
+        document.getElementById("attendanceList").innerHTML = list
+          .map(
+            (s) =>
+              `<div style="display:flex;align-items:center;gap:8px;padding:8px;background:#fff;margin-bottom:6px;border-radius:6px"><div style="width:40px"><img src="${
+                s.photo || "https://via.placeholder.com/48"
+              }" style="width:36px;height:36px;border-radius:6px;object-fit:cover"></div><div style="flex:1"><strong>${
+                s.fullname
+              }</strong><div class="muted-sm">${s.id} • ${
+                s.class || ""
+              }</div></div><div><input type="checkbox" data-id="${s.id}" ${
+                records[s.id] ? "checked" : ""
+              } onchange="toggleAttendance('${date}','${
+                s.id
+              }',this.checked)"></div></div>`
+          )
+          .join("");
+      }
+
+      function toggleAttendance(date, id, state) {
+        attendance[date] = attendance[date] || {};
+        attendance[date][id] = !!state;
+        save("sis_attendance", attendance);
+      }
+
+      function exportAttendance() {
+        const date = document.getElementById("attendanceDate").value;
+        if (!date) return alert("Select date");
+        const rec = attendance[date] || {};
+        const rows = [["student_id", "fullname", "class", "present"]].concat(
+          students.map((s) => [
+            s.id,
+            s.fullname,
+            s.class || "",
+            rec[s.id] ? "1" : "0",
+          ])
+        );
+        const csv = rows
+          .map((r) =>
+            r.map((c) => `"${("" + c).replace(/"/g, '""')}"`).join(",")
+          )
+          .join("\n");
+        const blob = new Blob([csv], { type: "text/csv" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "attendance-" + date + ".csv";
+        a.click();
+      }
+
+      /* ================ BACKUP ================ */
+      function backupData() {
+        const payload = { students, teachers, classes, attendance, branding };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {
+          type: "application/json",
+        });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download =
+          "sis-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+        a.click();
+      }
+
+      /* ================ SAMPLE / UTIL ================ */
+      function populateSample() {
+        if (
+          !confirm(
+            "This will replace current students with sample set. Continue?"
+          )
+        )
+          return;
+        students = sampleStudents.slice();
+        save("sis_students", students);
+        renderStudents();
+        refreshTotals();
+        alert("Sample students loaded");
+      }
+
+      /* ================ ADMIN PANEL ================ */
+      function renderAdminPanel() {
+        document.getElementById("adminFullName").textContent =
+          "Samuel A. Koroma";
+        document.getElementById("adminEmailPanel").textContent =
+          "admin@school.test";
+      }
+
+      /* ================ INIT ================ */
+      refreshTotals();
+      renderClassPanel();
+      renderTeachers();
+      renderTeachersAssignments();
+      // theme
+      const storedTheme = localStorage.getItem("sis_theme") || "light";
+      document.body.setAttribute("data-theme", storedTheme);
+      // branding
+      const brand = load("sis_branding", {});
+      if (brand.logo)
+        document.getElementById("brandLogoPreview").src = brand.logo;
+      branding = brand;
+      // auto-login if persisted
+      if (localStorage.getItem("sis_logged")) {
+        document.getElementById("splash").classList.add("hidden");
+        document.getElementById("app").classList.remove("hidden");
+        renderQuick();
+      }
+    </script>
+  </body>
+</html>
